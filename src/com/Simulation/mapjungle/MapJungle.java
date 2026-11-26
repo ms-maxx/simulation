@@ -2,13 +2,14 @@ package com.Simulation.mapjungle;
 
 import com.Simulation.entitis.Coordinates;
 import com.Simulation.entitis.Entity;
+import com.Simulation.entitis.creatures.Creature;
 import com.Simulation.entitis.creatures.Survivor;
 import com.Simulation.entitis.creatures.Zombie;
 import com.Simulation.entitis.environment.Palm;
 import com.Simulation.entitis.environment.Supply;
 import com.Simulation.entitis.environment.Fire;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class MapJungle {
 
@@ -26,6 +27,11 @@ public class MapJungle {
         jungleMap.put(coordinates, entity);
     }
 
+    public void moveEntity(Coordinates currentCoordinates, Coordinates coordinatesToMove, Entity entity){
+        removeEntity(currentCoordinates);
+        setEntity(coordinatesToMove, entity);
+    }
+
     public Entity getEntity(Coordinates coordinates){
         return jungleMap.get(coordinates);
     }
@@ -38,16 +44,32 @@ public class MapJungle {
         return !jungleMap.containsKey(coordinates);
     }
 
+    public Set<Map.Entry<Coordinates,Entity>> getEntries(){
+        return Collections.unmodifiableMap(jungleMap).entrySet();
+    }
+
+    public boolean isMapHasPray(){
+        for(Map.Entry<Coordinates, Entity> entry : jungleMap.entrySet()){
+            Entity entity = entry.getValue();
+
+            if(entity instanceof Survivor){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void setupRandomEntityPositions(){
 
         //Zombies
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             Coordinates randomCoordinates = Coordinates.getRandomCoordinates(this);
             setEntity(randomCoordinates, new Zombie(randomCoordinates));
         }
 
         //Survivors
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 10; i++) {
             Coordinates randomCoordinates = Coordinates.getRandomCoordinates(this);
             setEntity(randomCoordinates, new Survivor(randomCoordinates));
         }
@@ -71,6 +93,4 @@ public class MapJungle {
         }
 
     }
-
-
 }
